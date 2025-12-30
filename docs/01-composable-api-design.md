@@ -286,6 +286,65 @@ Build on top of `MaterialTheme` by using its color and typography schemes as the
 2.  **Consumption**: When you call `MaterialTheme.colorScheme.primary`, you are actually calling `LocalColorScheme.current.primary`.
 3.  **Ripple & Content Color**: `MaterialTheme` also sets up the `LocalIndication` (ripple) and `LocalContentColor`. The logic `contentColorFor(color)` works by checking the `LocalColorScheme` to see if the provided background color matches a known token (like `primary`), and if so, returns its pair (`onPrimary`).
 
+### 5.3 Case Study: Adaptive Spacing System
+Hardcoding Dp values (e.g., `padding(16.dp)`) makes it difficult to maintain consistency and adapt to different screen sizes. A best practice is to extend `MaterialTheme` with a custom Spacing system that reacts to the Window Size Class.
+
+**1. Define the System**
+Create an immutable data class to hold your semantic spacing values and a `CompositionLocal`.
+
+```kotlin
+@Immutable
+data class Spacing(
+    val default: Dp = 0.dp,
+    val extraSmall: Dp = 4.dp,
+    val small: Dp = 8.dp,
+    val medium: Dp = 16.dp,
+    val large: Dp = 24.dp,
+    val extraLarge: Dp = 32.dp,
+    // Semantic names are often better than t-shirt sizes
+    val screenMargin: Dp = 16.dp,
+    val borderThin: Dp = 0.5.dp
+)
+
+val LocalSpacing = staticCompositionLocalOf { Spacing() }
+
+val MaterialTheme.spacing: Spacing
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalSpacing.current
+```
+
+**2. Provide Adaptive Values**
+Calculate the window size class (using `calculateWindowSizeClass()` or `LocalConfiguration`) and provide the appropriate spacing configuration at the root of your screen.
+
+```kotlin
+@Composable
+fun AdaptiveRoot() {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+
+    // Determine Window Size Class
+    val windowSizeClass = when {
+        screenWidth < 600.dp -> WindowWidthSizeClass.Compact
+        screenWidth < 840.dp -> WindowWidthSizeClass.Medium
+        else -> WindowWidthSizeClass.Expanded
+    }
+
+    // Adaptive spacing configuration
+    val spacing = when (windowSizeClass) {
+        WindowWidthSizeClass.Compact -> Spacing(screenMargin = 16.dp)
+        WindowWidthSizeClass.Medium -> Spacing(screenMargin = 24.dp)
+        else -> Spacing(screenMargin = 32.dp, extraLarge = 48.dp)
+    }
+
+    CompositionLocalProvider(LocalSpacing provides spacing) {
+        // Child composables use MaterialTheme.spacing.screenMargin
+        // without knowing the specific Dp value or screen size.
+        DashboardContent()
+    }
+}
+```
+
 ## 6. Reference Implementation
 
 ```kotlin
