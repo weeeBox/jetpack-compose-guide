@@ -5,3 +5,4 @@
 *   **ConstraintLayout Overuse**: Using `ConstraintLayout` for simple linear layouts. **Mitigation**: Prefer nested `Column`/`Row` for better performance and readability, reserving `ConstraintLayout` for complex relative positioning.
 *   **Writing to State during Composition**: Modifying state directly in the Composable body. **Mitigation**: Always move side effects to callbacks or Effect handlers (`LaunchedEffect`, `SideEffect`).
 *   **Hardcoding Dimensions/Colors**: Scattering magic numbers and hex codes. **Mitigation**: Define them in the Theme or `Dimens` object to ensure consistency and ease of changes.
+*   **Modifier Order Issues**: Misunderstanding that modifier order matters (e.g., padding vs clickable). **Mitigation**: See [Effective Modifiers](08-modifiers.md) for the "Onion Model" explanation.
