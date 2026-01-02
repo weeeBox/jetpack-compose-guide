@@ -73,7 +73,34 @@ fun ActionButtonBar(
 }
 ```
 
-### 1.5 Modifier Factories
+### 1.5 Scope Extensions for List Organization
+For complex lists, use private extension functions on `LazyListScope` to modularize sections. 
+
+**Naming Convention**: Use **camelCase** (e.g., `profileSection`). Unlike standard Composables, these are DSL builder functions and are not marked with `@Composable`. They should mimic the naming of built-in DSL methods like `item` and `items`.
+
+```kotlin
+@Composable
+fun MyScreen(state: MyUiState) {
+    LazyColumn {
+        item { Header(state.title) }
+        
+        // Extracted section (DSL builder)
+        profileSection(state.user)
+        
+        item { Footer() }
+    }
+}
+
+// Note: No @Composable annotation, use camelCase
+private fun LazyListScope.profileSection(user: User) {
+    item { ProfileHeader(user) }
+    items(user.posts) { post ->
+        PostItem(post)
+    }
+}
+```
+
+### 1.6 Modifier Factories
 For complex modifier chains that are reused across multiple components, consider creating a **Modifier Factory** extension function. This improves readability, ensures consistency, and keeps your Composable code clean.
 
 ```kotlin
