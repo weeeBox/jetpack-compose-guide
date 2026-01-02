@@ -76,7 +76,7 @@ fun ActionButtonBar(
 ### 1.5 Scope Extensions for List Organization
 For complex lists, use private extension functions on `LazyListScope` to modularize sections. 
 
-**Naming Convention**: Use **camelCase** (e.g., `profileSection`). Unlike standard Composables, these are DSL builder functions and are not marked with `@Composable`. They should mimic the naming of built-in DSL methods like `item` and `items`.
+**Naming Convention**: Use **camelCase** (e.g., `contentSection`). Unlike standard Composables, these are DSL builder functions and are not marked with `@Composable`. They should mimic the naming of built-in DSL methods like `item` and `items`.
 
 ```kotlin
 @Composable
@@ -85,17 +85,17 @@ fun MyScreen(state: MyUiState) {
         item { Header(state.title) }
         
         // Extracted section (DSL builder)
-        profileSection(state.user)
+        contentSection(state.data)
         
         item { Footer() }
     }
 }
 
 // Note: No @Composable annotation, use camelCase
-private fun LazyListScope.profileSection(user: User) {
-    item { ProfileHeader(user) }
-    items(user.posts) { post ->
-        PostItem(post)
+private fun LazyListScope.contentSection(data: MyData) {
+    item { SectionHeader(data.title) }
+    items(data.items) { item ->
+        ListItem(item)
     }
 }
 ```
@@ -409,6 +409,29 @@ fun InformationCard(
             Spacer(modifier = Modifier.height(8.dp))
             content()
         }
+    }
+}
+```
+
+### 1.7 Edge-to-Edge and Window Insets
+Modern Android apps should support "Edge-to-Edge" rendering, where content is drawn behind system bars (Status Bar and Navigation Bar).
+
+**Best Practice**: Use `WindowInsets` to add appropriate spacing for system bars, ensuring content doesn't overlap with system icons or the gesture navigation bar.
+
+In a `LazyColumn`, use `Spacer` with `windowInsetsTopHeight` or `windowInsetsBottomHeight` at the start and end of the list to ensure the first and last items are not obscured.
+
+```kotlin
+LazyColumn(state = state) {
+    item {
+        // Add padding for the status bar
+        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+    }
+    
+    /* ... items ... */
+    
+    item {
+        // Add padding for the navigation bar
+        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
     }
 }
 ```

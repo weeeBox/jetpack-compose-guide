@@ -229,7 +229,34 @@ The `composed` modifier allows you to use Composable functions (like `remember`,
 
 **When to use it**: Only when prototyping or when you strictly need a `Composable` function result (like a transition) that is hard to replicate with `Modifier.Node`.
 
-## 7. Common Pitfalls Checklist
+## 8. Testability
+
+To write robust UI tests, Composables must be easily identifiable.
+
+### 8.1 Using `testTag`
+The `testTag` modifier allows you to assign a unique string to a Composable, which can then be used in your tests to find and interact with that element.
+
+**Best Practice**: In Screen-level Composables, apply a `testTag` to the root element, often incorporating dynamic data like IDs to distinguish between different instances of the same screen.
+
+```kotlin
+@Composable
+fun FeatureScreen(
+    itemId: String,
+    modifier: Modifier = Modifier
+) {
+    FeatureContent(
+        // Use a descriptive tag with a dynamic ID
+        modifier = modifier.testTag("feature:$itemId")
+    )
+}
+```
+
+In your tests:
+```kotlin
+composeTestRule.onNodeWithTag("feature:123").assertIsDisplayed()
+```
+
+## 9. Common Pitfalls Checklist
 
 1.  [ ] **Clickable Padding**: Did you apply `.clickable` *before* `.padding` to ensure a large enough touch target?
 2.  [ ] **Clip Order**: Did you apply `.clip(Shape)` *before* `.background(Color)`? (Background draws *within* the current bounds; if you clip after, the background might already be drawn square).

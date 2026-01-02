@@ -77,3 +77,28 @@ As mentioned in the API Design guide, use `@ReadOnlyComposable` for helper funct
 @ReadOnlyComposable
 fun colors(): ChatColors = ...
 ```
+
+## 3. Performance Monitoring
+
+Optimizing performance is an iterative process that requires measurement.
+
+### 3.1 Tracking Scroll Jank
+In production, it's important to monitor whether your lists are stuttering (janking) during scrolls.
+
+**Best Practice**: Use specialized utilities like `TrackScrollJank` to monitor the `ScrollableState` (like `LazyListState`) and report performance metrics.
+
+```kotlin
+@Composable
+fun MyScreen() {
+    val state = rememberLazyListState()
+    
+    // Monitors scroll performance and reports jank
+    TrackScrollJank(scrollableState = state, stateName = "my_screen:list")
+    
+    LazyColumn(state = state) {
+        /* ... */
+    }
+}
+```
+
+This ensures you have visibility into real-world performance across different devices.
