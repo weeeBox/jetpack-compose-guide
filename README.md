@@ -11,3 +11,4 @@
 *   [Production Readiness](docs/07-production-readiness.md): Accessibility, localization, and testing.
 *   [Effective Modifiers](docs/08-modifiers.md): Deep dive into modifier ordering, scoping, and layout constraints.
 *   [Styling & Design Systems](docs/09-styling.md): Material Design 3, theming, semantic colors, and typography best practices.
+*   [Layouts & Surfaces](docs/10-layout-and-surfaces.md): Core layout primitives, Material surfaces, cards, and common layout patterns.
