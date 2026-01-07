@@ -10,3 +10,4 @@
 *   [Performance Optimization](docs/06-performance-optimization.md): Stability, skipping recomposition, and list performance.
 *   [Production Readiness](docs/07-production-readiness.md): Accessibility, localization, and testing.
 *   [Effective Modifiers](docs/08-modifiers.md): Deep dive into modifier ordering, scoping, and layout constraints.
+*   [Styling & Design Systems](docs/09-styling.md): Material Design 3, theming, semantic colors, and typography best practices.
